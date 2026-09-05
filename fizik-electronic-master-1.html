@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Физик ба Электроник Мастер</title>
+<style>
+  :root{
+    --primary:#4f46e5;
+    --primary-dark:#3730a3;
+    --accent:#f59e0b;
+    --accent2:#10b981;
+    --bg:#f4f6fb;
+    --card-bg:#ffffff;
+    --text:#1f2937;
+    --muted:#6b7280;
+    --shadow: 0 8px 24px rgba(79,70,229,0.12);
+    --radius:18px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:'Segoe UI', 'Noto Sans', Tahoma, sans-serif;
+    background:linear-gradient(180deg,#eef1fb 0%, #f4f6fb 100%);
+    color:var(--text);
+    min-height:100vh;
+  }
+
+  /* HEADER */
+  header{
+    background:linear-gradient(120deg,var(--primary) 0%, #7c3aed 100%);
+    color:#fff;
+    padding:32px 20px 20px;
+    text-align:center;
+    border-bottom-left-radius:32px;
+    border-bottom-right-radius:32px;
+    box-shadow:var(--shadow);
+    position:relative;
+    overflow:hidden;
+  }
+  header::before{
+    content:"⚛️";
+    position:absolute;
+    font-size:120px;
+    opacity:0.08;
+    left:-20px;
+    top:-30px;
+  }
+  header::after{
+    content:"🔋";
+    position:absolute;
+    font-size:120px;
+    opacity:0.08;
+    right:-20px;
+    bottom:-40px;
+  }
+  header h1{
+    margin:0 0 8px;
+    font-size:clamp(1.6rem, 4vw, 2.4rem);
+    letter-spacing:0.5px;
+  }
+  header p{
+    margin:0 auto 20px;
+    max-width:600px;
+    font-size:clamp(0.9rem,2vw,1.05rem);
+    opacity:0.95;
+  }
+
+  .tabs{
+    display:flex;
+    justify-content:center;
+    gap:12px;
+    flex-wrap:wrap;
+  }
+  .tab-btn{
+    background:rgba(255,255,255,0.15);
+    border:2px solid rgba(255,255,255,0.5);
+    color:#fff;
+    padding:12px 16px;
+    min-height:48px;
+    min-width:48px;
+    border-radius:999px;
+    font-size:1rem;
+    font-weight:600;
+    cursor:pointer;
+    transition:all 0.25s ease;
+    backdrop-filter:blur(4px);
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    -webkit-tap-highlight-color:transparent;
+    touch-action:manipulation;
+  }
+  .tab-btn:hover{
+    background:rgba(255,255,255,0.3);
+    transform:translateY(-2px);
+  }
+  .tab-btn.active{
+    background:#fff;
+    color:var(--primary-dark);
+    border-color:#fff;
+    box-shadow:0 6px 16px rgba(0,0,0,0.2);
+  }
+
+  main{
+    max-width:1100px;
+    margin:0 auto;
+    padding:30px 18px 60px;
+  }
+
+  .section{
+    display:none;
+    animation:fadeIn 0.4s ease;
+  }
+  .section.active{display:block;}
+
+  @keyframes fadeIn{
+    from{opacity:0; transform:translateY(10px);}
+    to{opacity:1; transform:translateY(0);}
+  }
+
+  .section-title{
+    text-align:center;
+    font-size:clamp(1.3rem,3vw,1.8rem);
+    margin-bottom:6px;
+    color:var(--primary-dark);
+  }
+  .section-sub{
+    text-align:center;
+    color:var(--muted);
+    margin-bottom:28px;
+    font-size:0.95rem;
+  }
+
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+    gap:20px;
+  }
+
+  .card{
+    background:var(--card-bg);
+    border-radius:var(--radius);
+    padding:22px;
+    box-shadow:0 4px 14px rgba(31,41,55,0.08);
+    cursor:pointer;
+    transition:transform 0.25s ease, box-shadow 0.25s ease;
+    border:2px solid transparent;
+    position:relative;
+    overflow:hidden;
+  }
+  .card:hover{
+    transform:translateY(-6px) scale(1.02);
+    box-shadow:0 14px 28px rgba(79,70,229,0.18);
+    border-color:var(--primary);
+  }
+  .card .icon{
+    font-size:2.4rem;
+    margin-bottom:10px;
+    display:block;
+  }
+  .card h3{
+    margin:0 0 6px;
+    font-size:1.15rem;
+    color:var(--primary-dark);
+  }
+  .card .formula{
+    font-size:1.5rem;
+    font-weight:700;
+    color:var(--accent2);
+    background:#ecfdf5;
+    display:inline-block;
+    padding:4px 14px;
+    border-radius:10px;
+    margin:8px 0;
+    letter-spacing:1px;
+  }
+  .card .elec-symbol{
+    font-size:2.2rem;
+    background:#eef2ff;
+    display:inline-block;
+    padding:8px 16px;
+    border-radius:12px;
+    margin:8px 0;
+  }
+  .card .hint{
+    font-size:0.85rem;
+    color:var(--muted);
+    margin-top:8px;
+  }
+  .card .tap-label{
+    position:absolute;
+    top:14px;
+    right:16px;
+    font-size:0.75rem;
+    color:var(--primary);
+    background:#eef2ff;
+    padding:3px 10px;
+    border-radius:999px;
+    font-weight:600;
+  }
+
+  /* MODAL */
+  .overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(17,24,39,0.55);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:16px;
+    z-index:100;
+    animation:fadeIn 0.25s ease;
+  }
+  .overlay.active{display:flex;}
+  .modal{
+    background:#fff;
+    border-radius:22px;
+    max-width:520px;
+    width:100%;
+    max-height:88vh;
+    overflow-y:auto;
+    padding:28px;
+    position:relative;
+    box-shadow:0 20px 50px rgba(0,0,0,0.35);
+    animation:popIn 0.3s ease;
+  }
+  @keyframes popIn{
+    from{transform:scale(0.9); opacity:0;}
+    to{transform:scale(1); opacity:1;}
+  }
+  .modal-close{
+    position:absolute;
+    top:14px;
+    right:16px;
+    background:#f3f4f6;
+    border:none;
+    width:36px;
+    height:36px;
+    border-radius:50%;
+    font-size:1.1rem;
+    cursor:pointer;
+    color:var(--text);
+    transition:background 0.2s;
+  }
+  .modal-close:hover{background:#e5e7eb;}
+
+  .modal .modal-icon{
+    font-size:3rem;
+    text-align:center;
+    display:block;
+    margin-bottom:6px;
+  }
+  .modal h2{
+    text-align:center;
+    color:var(--primary-dark);
+    margin:0 0 4px;
+  }
+  .modal .modal-formula{
+    text-align:center;
+    font-size:2rem;
+    font-weight:800;
+    color:#fff;
+    background:linear-gradient(120deg,var(--accent2),#059669);
+    padding:14px;
+    border-radius:14px;
+    margin:16px 0;
+    letter-spacing:2px;
+  }
+  .modal .modal-symbol{
+    text-align:center;
+    font-size:3rem;
+    background:linear-gradient(120deg,#818cf8,var(--primary));
+    color:#fff;
+    padding:18px;
+    border-radius:14px;
+    margin:16px 0;
+  }
+  .modal-block{
+    background:#f9fafb;
+    border-radius:12px;
+    padding:14px 16px;
+    margin-bottom:14px;
+  }
+  .modal-block h4{
+    margin:0 0 8px;
+    color:var(--primary);
+    font-size:0.95rem;
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+  .modal-block ul{
+    margin:0;
+    padding-left:18px;
+  }
+  .modal-block li{
+    margin-bottom:4px;
+    font-size:0.95rem;
+  }
+  .modal-block p{
+    margin:0;
+    font-size:0.95rem;
+    line-height:1.5;
+  }
+  .example-box{
+    background:#fff7ed;
+    border-left:5px solid var(--accent);
+    padding:12px 16px;
+    border-radius:10px;
+    font-size:0.95rem;
+    line-height:1.5;
+  }
+  .use-box{
+    background:#eff6ff;
+    border-left:5px solid var(--primary);
+    padding:12px 16px;
+    border-radius:10px;
+    font-size:0.95rem;
+    line-height:1.5;
+  }
+
+  /* ---------------- UNIT CONVERTER ---------------- */
+  .unit-subtabs{
+    display:flex;
+    gap:8px;
+    overflow-x:auto;
+    padding-bottom:10px;
+    margin-bottom:18px;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:thin;
+  }
+  .unit-subtabs::-webkit-scrollbar{height:5px;}
+  .unit-subtabs::-webkit-scrollbar-thumb{background:#d1d5db;border-radius:10px;}
+  .unit-subtab{
+    flex:0 0 auto;
+    background:#eef2ff;
+    border:2px solid transparent;
+    color:var(--primary-dark);
+    padding:10px 18px;
+    min-height:44px;
+    border-radius:999px;
+    font-size:0.92rem;
+    font-weight:600;
+    cursor:pointer;
+    white-space:nowrap;
+    transition:all 0.2s ease;
+  }
+  .unit-subtab:hover{background:#e0e7ff;}
+  .unit-subtab.active{
+    background:var(--primary);
+    color:#fff;
+    border-color:var(--primary-dark);
+    box-shadow:0 4px 12px rgba(79,70,229,0.3);
+  }
+
+  .converter-card{
+    background:var(--card-bg);
+    border-radius:24px;
+    padding:22px;
+    box-shadow:0 8px 24px rgba(31,41,55,0.1);
+    max-width:480px;
+    margin:0 auto;
+  }
+  .conv-field{
+    background:#f8fafc;
+    border-radius:16px;
+    padding:14px 16px;
+    border:2px solid #eef1f6;
+    transition:border-color 0.2s ease;
+  }
+  .conv-field:focus-within{
+    border-color:var(--primary);
+  }
+  .conv-field.output-field{
+    background:#ecfdf5;
+    border-color:#d1fae5;
+  }
+  .conv-field-label{
+    font-size:0.75rem;
+    color:var(--muted);
+    font-weight:600;
+    margin-bottom:4px;
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+  }
+  .conv-field-top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+  }
+  .conv-field-top input{
+    flex:1;
+    min-width:0;
+    border:none;
+    background:transparent;
+    font-size:1.9rem;
+    font-weight:700;
+    color:var(--text);
+    outline:none;
+    font-family:inherit;
+  }
+  .conv-field.output-field input{
+    color:#059669;
+  }
+  .unit-select{
+    flex:0 0 auto;
+    background:#fff;
+    border:2px solid #e5e7eb;
+    color:var(--primary-dark);
+    font-weight:700;
+    font-size:0.9rem;
+    padding:8px 12px;
+    min-height:40px;
+    border-radius:12px;
+    cursor:pointer;
+    white-space:nowrap;
+    transition:all 0.2s ease;
+    max-width:150px;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .unit-select:hover{
+    border-color:var(--primary);
+    background:#eef2ff;
+  }
+
+  .conv-swap-row{
+    display:flex;
+    justify-content:center;
+    margin:10px 0;
+  }
+  #swap-btn{
+    background:linear-gradient(120deg,var(--primary),#7c3aed);
+    color:#fff;
+    border:none;
+    width:46px;
+    height:46px;
+    border-radius:50%;
+    font-size:1.3rem;
+    cursor:pointer;
+    box-shadow:0 6px 14px rgba(79,70,229,0.35);
+    transition:transform 0.2s ease;
+  }
+  #swap-btn:active{transform:rotate(180deg) scale(0.92);}
+
+  /* Unit picker list (inside shared modal) */
+  .unit-option{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    width:100%;
+    background:#f9fafb;
+    border:2px solid transparent;
+    border-radius:12px;
+    padding:12px 16px;
+    margin-bottom:8px;
+    font-size:1rem;
+    font-weight:600;
+    color:var(--text);
+    cursor:pointer;
+    text-align:left;
+    min-height:48px;
+    transition:all 0.15s ease;
+  }
+  .unit-option:hover{background:#eef2ff;}
+  .unit-option.selected{
+    background:#eef2ff;
+    border-color:var(--primary);
+    color:var(--primary-dark);
+  }
+  .unit-option .check{color:var(--primary); font-weight:800;}
+
+  /* Keypad */
+  .keypad{
+    max-width:480px;
+    margin:20px auto 0;
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:10px;
+  }
+  .keypad button{
+    min-height:56px;
+    border:none;
+    border-radius:16px;
+    background:#fff;
+    box-shadow:0 3px 10px rgba(31,41,55,0.08);
+    font-size:1.3rem;
+    font-weight:700;
+    color:var(--text);
+    cursor:pointer;
+    transition:all 0.15s ease;
+    -webkit-tap-highlight-color:transparent;
+    touch-action:manipulation;
+  }
+  .keypad button:active{
+    transform:scale(0.94);
+    background:#eef2ff;
+  }
+  .keypad button.key-clear{
+    color:#dc2626;
+    background:#fef2f2;
+  }
+  .keypad button.key-back{
+    color:var(--primary-dark);
+    background:#eef2ff;
+  }
+  .keypad button.key-dot{
+    grid-column:span 4;
+    background:#f3f4f6;
+  }
+
+  footer{
+    text-align:center;
+    padding:20px;
+    color:var(--muted);
+    font-size:0.85rem;
+  }
+
+  @media (max-width:480px){
+    .card{padding:18px;}
+    .modal{padding:20px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>⚛️ Физик ба Электроник Мастер</h1>
+  <p>Физикийн гол томьёонууд болон цахилгааны суурь эд ангиудыг хөгжилтэйгээр судлаарай! Карт дээр дарж дэлгэрэнгүй мэдээлэл үзээрэй 👇</p>
+  <div class="tabs">
+    <button class="tab-btn active" data-target="formulas">📘 Томьёонууд</button>
+    <button class="tab-btn" data-target="electronics">⚡ Электроник</button>
+    <button class="tab-btn" data-target="converter">🔄 Хөрвүүлэгч</button>
+  </div>
+</header>
+
+<main>
+  <!-- SECTION 1: PHYSICS FORMULAS -->
+  <section id="formulas" class="section active">
+    <h2 class="section-title">📘 Физикийн чухал томьёонууд</h2>
+    <p class="section-sub">Карт дээр дарж томьёо, тэмдэглэгээ болон жишээг үзээрэй</p>
+    <div class="grid" id="formula-grid"></div>
+  </section>
+
+  <!-- SECTION 2: ELECTRONICS -->
+  <section id="electronics" class="section">
+    <h2 class="section-title">⚡ Цахилгааны суурь эд ангиуд</h2>
+    <p class="section-sub">Карт дээр дарж эд ангийн тухай дэлгэрэнгүй үзээрэй</p>
+    <div class="grid" id="electronics-grid"></div>
+  </section>
+
+  <!-- SECTION 3: UNIT CONVERTER -->
+  <section id="converter" class="section">
+    <h2 class="section-title">🔄 Нэгж хөрвүүлэгч</h2>
+    <p class="section-sub">Дээд талбарт тоо оруулахад доод талд хариу автоматаар гарна</p>
+
+    <div class="unit-subtabs" id="unit-subtabs"></div>
+
+    <div class="converter-card">
+      <div class="conv-field">
+        <div class="conv-field-label">Оруулах утга</div>
+        <div class="conv-field-top">
+          <input type="text" id="conv-input" inputmode="decimal" autocomplete="off" value="1">
+          <button class="unit-select" id="unit-btn-from">Kilograms ▾</button>
+        </div>
+      </div>
+
+      <div class="conv-swap-row">
+        <button id="swap-btn" title="Нэгжүүдийг сэлгэх">⇅</button>
+      </div>
+
+      <div class="conv-field output-field">
+        <div class="conv-field-label">Хариу</div>
+        <div class="conv-field-top">
+          <input type="text" id="conv-output" readonly tabindex="-1">
+          <button class="unit-select" id="unit-btn-to">Grams ▾</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="keypad" id="keypad">
+      <button data-key="7">7</button>
+      <button data-key="8">8</button>
+      <button data-key="9">9</button>
+      <button data-key="back" class="key-back">⌫</button>
+      <button data-key="4">4</button>
+      <button data-key="5">5</button>
+      <button data-key="6">6</button>
+      <button data-key="clear" class="key-clear">C</button>
+      <button data-key="1">1</button>
+      <button data-key="2">2</button>
+      <button data-key="3">3</button>
+      <button data-key="0">0</button>
+      <button data-key="." class="key-dot">.</button>
+    </div>
+  </section>
+</main>
+
+<footer>© 2026 Физик ба Электроник Мастер | Таны нэр, 11-р анги | AI тусламжтай хөгжүүлэв.</footer>
+
+<!-- MODAL -->
+<div class="overlay" id="overlay">
+  <div class="modal" id="modal-content"></div>
+</div>
+
+<script>
+// ---------------- DATA ----------------
+const formulas = [
+  {
+    icon:"🍎",
+    name:"Хүндийн хүч",
+    formula:"F = m·g",
+    vars:[
+      "F — хүндийн хүч [Н] (Ньютон)",
+      "m — масс [кг] (килограмм)",
+      "g — чөлөөт уналтын хурдасгал [м/с²] (≈9.8 м/с²)"
+    ],
+    desc:"Дэлхий бүх биетийг өөртөө татдаг хүчийг хүндийн хүч гэнэ. Энэ хүч биетийн масс болон чөлөөт уналтын хурдасгалаас хамаардаг.",
+    example:"Жишээ нь: 5 кг масстай хүүхэд унасан бол F = 5 × 9.8 = 49 Н хүчээр дэлхий рүү татагдана. Алим модноос унахад яг л энэ хүч ажилладаг! 🍏"
+  },
+  {
+    icon:"🏃",
+    name:"Хурд",
+    formula:"v = s / t",
+    vars:[
+      "v — хурд [м/с] (метр/секунд)",
+      "s — зам, зайлсан зай [м] (метр)",
+      "t — хугацаа [с] (секунд)"
+    ],
+    desc:"Биет нэгж хугацаанд явсан замын хэмжээг хурд гэнэ. Хурд их байх тусам биет илүү хурдан хөдөлнө.",
+    example:"Жишээ нь: Чи 100 метрийг 20 секундэд гүйсэн бол v = 100/20 = 5 м/с хурдтай гүйсэн гэсэн үг. 🏃‍♂️"
+  },
+  {
+    icon:"🧊",
+    name:"Нягт",
+    formula:"ρ = m / V",
+    vars:[
+      "ρ (ро) — нягт [кг/м³]",
+      "m — масс [кг]",
+      "V — эзэлхүүн [м³]"
+    ],
+    desc:"Бодисын нэгж эзэлхүүнд ногдох массыг нягт гэнэ. Нягт өндөр бодис жинтэй, нягт бага бодис хөнгөн байдаг.",
+    example:"Жишээ нь: Төмөр усанд живдэг, учир нь төмрийн нягт (7800 кг/м³) усны нягтаас (1000 кг/м³) хамаагүй их. Харин мод усан дээр хөвдөг! 🪵"
+  },
+  {
+    icon:"💡",
+    name:"Ом-ын хууль",
+    formula:"I = U / R",
+    vars:[
+      "I — гүйдэл [А] (Ампер)",
+      "U — хүчдэл [В] (Вольт)",
+      "R — эсэргүүцэл [Ом]"
+    ],
+    desc:"Хэлхээн дэх гүйдлийн хүч нь хүчдэлтэй шууд, эсэргүүцэлтэй урвуу хамааралтай байдаг. Энэ бол цахилгааны хамгийн чухал хууль!",
+    example:"Жишээ нь: 12В батарейг 4 Ом эсэргүүцэлтэй гэрэлтэй холбовол I = 12/4 = 3А гүйдэл гүйнэ. Энэ мэдлэг цахилгаан хэрэгсэл засварлахад тустай! 🔧"
+  },
+  {
+    icon:"💪",
+    name:"Ажил",
+    formula:"W = F·s",
+    vars:[
+      "W — хийсэн ажил [Ж] (Жоуль)",
+      "F — үйлчилж буй хүч [Н]",
+      "s — хүчний чиглэлд явсан зай [м]"
+    ],
+    desc:"Хүч нь биетийг байрлалаас нь зөөж, ажил хийсэн бол механик ажил гэдэг. Хүч болон зам хоёулаа их байх тусам ажил их болно.",
+    example:"Жишээ нь: 10 Н хүчээр хайрцгийг 3 метр түлхэвэл W = 10 × 3 = 30 Ж ажил хийсэн болно. Хүнс зөөх, сав өргөх бүгд ажил хийх жишээ! 📦"
+  }
+];
+
+const electronics = [
+  {
+    icon:"🟫",
+    symbol:"—[[[[[[]—",
+    nameEn:"Resistor",
+    nameMn:"Эсэргүүцэгч",
+    desc:"Хэлхээн дэх гүйдлийн урсгалыг хааж, багасгадаг эд анги. Ихэвчлэн LED болон бусад мэдрэмтгий эд ангиудыг хэт их гүйдлээс хамгаалахад ашигладаг.",
+    use:"Гэрэлтэй LED хэт хурдан шатахаас сэргийлж, гүйдлийг зохицуулахад ашигладаг. Радио, тоглоом, гэрэл асаагуур зэрэгт байдаг."
+  },
+  {
+    icon:"🔵",
+    symbol:"—| |—",
+    nameEn:"Capacitor",
+    nameMn:"Конденсатор",
+    desc:"Цахилгаан цэнэгийг түр хугацаанд хуримтлуулж, дараа нь гаргаж өгдөг эд анги. Усны сав шиг цахилгааны 'сав' гэж төсөөлж болно.",
+    use:"Камерын флаш гэрэл түргэн анивчихад, дуу чимээ шүүхэд, мөн компьютерийн хүчдэлийг тогтворжуулахад ашигладаг."
+  },
+  {
+    icon:"💡",
+    symbol:"—▷|—",
+    nameEn:"LED (Light Emitting Diode)",
+    nameMn:"Гэрлэн диод",
+    desc:"Гүйдэл нэг чиглэлээр урссан үед гэрэл ялгаруулдаг бяцхан гэрэл. Маш бага эрчим хүч зарцуулдаг тул орчин үеийн гэрэлтүүлэгт өргөн ашиглагддаг.",
+    use:"Гэрийн гэрэлтүүлэг, гар утасны дэлгэц, гэрэлт самбар, тоглоомны индикатор гэх мэт олон зүйлд ашиглагддаг."
+  },
+  {
+    icon:"🔋",
+    symbol:"—| |⎓|—",
+    nameEn:"Battery",
+    nameMn:"Тэжээлийн үүсгүүр",
+    desc:"Химийн энергийг цахилгаан энергид хувиргаж, хэлхээнд хүчдэл (Вольт) өгдөг эх үүсвэр. Урт зурвас нь '+' туйл, богино зурвас нь '-' туйл.",
+    use:"Гар чийдэн, тоглоом, алсын удирдлага, гар утас зэрэг зөөврийн бүх төхөөрөмжид тэжээл өгдөг."
+  },
+  {
+    icon:"🔘",
+    symbol:"—/ —",
+    nameEn:"Switch",
+    nameMn:"Түлхүүр",
+    desc:"Хэлхээг нээж, хаадаг энгийн эд анги. Түлхүүр асаасан үед гүйдэл урсаж, унтраасан үед гүйдэл тасардаг.",
+    use:"Гэрлийн унтраалга, тоглоомын товчлуур, төхөөрөмжийн асаах/унтраах товч бүгд түлхүүрийн жишээ юм."
+  },
+  {
+    icon:"⚡",
+    symbol:"—▶|—",
+    nameEn:"Diode",
+    nameMn:"Диод",
+    desc:"Гүйдлийг зөвхөн нэг чиглэлээр нэвтрүүлдэг эд анги. Замын нэг чиглэлт хаалга шиг ажилладаг гэж төсөөлж болно.",
+    use:"Хувьсах гүйдлийг тогтмол гүйдэл болгон хувиргах (заслах), мөн хэлхээг буруу холбогдохоос хамгаалахад ашигладаг."
+  }
+];
+
+// ---------------- RENDER ----------------
+const formulaGrid = document.getElementById('formula-grid');
+formulas.forEach((f, i)=>{
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.innerHTML = `
+    <span class="tap-label">Дарж үзэх 👆</span>
+    <span class="icon">${f.icon}</span>
+    <h3>${f.name}</h3>
+    <div class="formula">${f.formula}</div>
+  `;
+  card.addEventListener('click', ()=>openFormulaModal(i));
+  formulaGrid.appendChild(card);
+});
+
+const elecGrid = document.getElementById('electronics-grid');
+electronics.forEach((e, i)=>{
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.innerHTML = `
+    <span class="tap-label">Дарж үзэх 👆</span>
+    <span class="icon">${e.icon}</span>
+    <h3>${e.nameMn}</h3>
+    <div style="color:var(--muted); font-size:0.85rem; margin-bottom:6px;">${e.nameEn}</div>
+    <div class="elec-symbol">${e.symbol}</div>
+  `;
+  card.addEventListener('click', ()=>openElecModal(i));
+  elecGrid.appendChild(card);
+});
+
+// ---------------- MODAL LOGIC ----------------
+const overlay = document.getElementById('overlay');
+const modalContent = document.getElementById('modal-content');
+
+function openFormulaModal(i){
+  const f = formulas[i];
+  modalContent.innerHTML = `
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <span class="modal-icon">${f.icon}</span>
+    <h2>${f.name}</h2>
+    <div class="modal-formula">${f.formula}</div>
+    <div class="modal-block">
+      <h4>🔤 Тэмдэглэгээний тайлбар</h4>
+      <ul>${f.vars.map(v=>`<li>${v}</li>`).join('')}</ul>
+    </div>
+    <div class="modal-block">
+      <h4>📖 Товч тайлбар</h4>
+      <p>${f.desc}</p>
+    </div>
+    <div class="modal-block" style="background:transparent;padding:0;">
+      <h4>🌟 Амьдрал дээрх жишээ</h4>
+      <div class="example-box">${f.example}</div>
+    </div>
+  `;
+  overlay.classList.add('active');
+}
+
+function openElecModal(i){
+  const e = electronics[i];
+  modalContent.innerHTML = `
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <span class="modal-icon">${e.icon}</span>
+    <h2>${e.nameMn}</h2>
+    <div style="text-align:center; color:var(--muted); margin-bottom:4px;">${e.nameEn}</div>
+    <div class="modal-symbol">${e.symbol}</div>
+    <div class="modal-block">
+      <h4>📖 Юу вэ?</h4>
+      <p>${e.desc}</p>
+    </div>
+    <div class="modal-block" style="background:transparent;padding:0;">
+      <h4>🛠️ Хаана ашигладаг вэ?</h4>
+      <div class="use-box">${e.use}</div>
+    </div>
+  `;
+  overlay.classList.add('active');
+}
+
+function closeModal(){
+  overlay.classList.remove('active');
+}
+overlay.addEventListener('click', (e)=>{
+  if(e.target === overlay) closeModal();
+});
+document.addEventListener('keydown', (e)=>{
+  if(e.key === 'Escape') closeModal();
+});
+
+// ---------------- TABS ----------------
+const tabBtns = document.querySelectorAll('.tab-btn');
+const sections = document.querySelectorAll('.section');
+tabBtns.forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    tabBtns.forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    sections.forEach(s=>s.classList.remove('active'));
+    document.getElementById(btn.dataset.target).classList.add('active');
+  });
+});
+
+// ---------------- UNIT CONVERTER ----------------
+const unitCategories = {
+  mass:{
+    label:"⚖️ Масс",
+    units:{
+      "Kilograms":1,
+      "Grams":0.001,
+      "Pounds":0.453592,
+      "Tons":1000,
+      "Ounces":0.0283495
+    },
+    defaults:["Kilograms","Grams"]
+  },
+  length:{
+    label:"📏 Урт",
+    units:{
+      "Meters":1,
+      "Kilometers":1000,
+      "Centimeters":0.01,
+      "Millimeters":0.001,
+      "Miles":1609.34,
+      "Feet":0.3048,
+      "Inches":0.0254
+    },
+    defaults:["Meters","Feet"]
+  },
+  speed:{
+    label:"🚀 Хурд",
+    units:{
+      "Meters/sec":1,
+      "Kilometers/hour":0.277778,
+      "Miles/hour":0.44704,
+      "Knots":0.514444
+    },
+    defaults:["Kilometers/hour","Meters/sec"]
+  },
+  time:{
+    label:"⏱️ Хугацаа",
+    units:{
+      "Seconds":1,
+      "Minutes":60,
+      "Hours":3600,
+      "Days":86400
+    },
+    defaults:["Minutes","Seconds"]
+  },
+  volume:{
+    label:"🧪 Эзэлхүүн",
+    units:{
+      "Liters":1,
+      "Milliliters":0.001,
+      "Cubic meters":1000,
+      "Gallons":3.78541,
+      "Cups":0.24
+    },
+    defaults:["Liters","Milliliters"]
+  }
+};
+
+let currentCategory = 'mass';
+let fromUnit = unitCategories.mass.defaults[0];
+let toUnit = unitCategories.mass.defaults[1];
+
+const subtabsWrap = document.getElementById('unit-subtabs');
+Object.keys(unitCategories).forEach(catKey=>{
+  const btn = document.createElement('button');
+  btn.className = 'unit-subtab' + (catKey === currentCategory ? ' active' : '');
+  btn.textContent = unitCategories[catKey].label;
+  btn.dataset.cat = catKey;
+  btn.addEventListener('click', ()=>{
+    currentCategory = catKey;
+    fromUnit = unitCategories[catKey].defaults[0];
+    toUnit = unitCategories[catKey].defaults[1];
+    document.querySelectorAll('.unit-subtab').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    updateUnitButtons();
+    runConversion();
+  });
+  subtabsWrap.appendChild(btn);
+});
+
+const convInput = document.getElementById('conv-input');
+const convOutput = document.getElementById('conv-output');
+const unitBtnFrom = document.getElementById('unit-btn-from');
+const unitBtnTo = document.getElementById('unit-btn-to');
+const swapBtn = document.getElementById('swap-btn');
+
+function updateUnitButtons(){
+  unitBtnFrom.textContent = fromUnit + " ▾";
+  unitBtnTo.textContent = toUnit + " ▾";
+}
+updateUnitButtons();
+
+function formatResult(num){
+  if(!isFinite(num)) return "0";
+  if(Math.abs(num) >= 1e9 || (Math.abs(num) < 1e-6 && num !== 0)){
+    return num.toExponential(4);
+  }
+  let rounded = Math.round(num * 1e6) / 1e6;
+  return rounded.toString();
+}
+
+function runConversion(){
+  const raw = parseFloat(convInput.value.replace(',', '.'));
+  const value = isNaN(raw) ? 0 : raw;
+  const units = unitCategories[currentCategory].units;
+  const baseValue = value * units[fromUnit];
+  const result = baseValue / units[toUnit];
+  convOutput.value = formatResult(result);
+}
+
+convInput.addEventListener('input', ()=>{
+  // allow only digits and a single dot
+  let v = convInput.value.replace(/[^0-9.]/g, '');
+  const parts = v.split('.');
+  if(parts.length > 2){ v = parts[0] + '.' + parts.slice(1).join(''); }
+  convInput.value = v;
+  runConversion();
+});
+
+swapBtn.addEventListener('click', ()=>{
+  const tmp = fromUnit;
+  fromUnit = toUnit;
+  toUnit = tmp;
+  convInput.value = convOutput.value;
+  updateUnitButtons();
+  runConversion();
+});
+
+// ---- Unit picker (reuses shared overlay/modal) ----
+function openUnitPicker(which){
+  const units = unitCategories[currentCategory].units;
+  const activeUnit = which === 'from' ? fromUnit : toUnit;
+  modalContent.innerHTML = `
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <h2>Нэгж сонгох</h2>
+    <div class="modal-block" style="background:transparent; padding:0; max-height:60vh; overflow-y:auto;">
+      ${Object.keys(units).map(u=>`
+        <button class="unit-option ${u===activeUnit?'selected':''}" data-unit="${u}">
+          <span>${u}</span>
+          ${u===activeUnit ? '<span class="check">✓</span>' : ''}
+        </button>
+      `).join('')}
+    </div>
+  `;
+  modalContent.querySelectorAll('.unit-option').forEach(opt=>{
+    opt.addEventListener('click', ()=>{
+      if(which === 'from'){ fromUnit = opt.dataset.unit; }
+      else { toUnit = opt.dataset.unit; }
+      updateUnitButtons();
+      runConversion();
+      closeModal();
+    });
+  });
+  overlay.classList.add('active');
+}
+unitBtnFrom.addEventListener('click', ()=>openUnitPicker('from'));
+unitBtnTo.addEventListener('click', ()=>openUnitPicker('to'));
+
+// ---- On-screen keypad ----
+const keypad = document.getElementById('keypad');
+keypad.addEventListener('click', (e)=>{
+  const btn = e.target.closest('button');
+  if(!btn) return;
+  const key = btn.dataset.key;
+  if(key === 'clear'){
+    convInput.value = '';
+  } else if(key === 'back'){
+    convInput.value = convInput.value.slice(0, -1);
+  } else if(key === '.'){
+    if(!convInput.value.includes('.')){
+      convInput.value = (convInput.value === '' ? '0' : convInput.value) + '.';
+    }
+  } else {
+    if(convInput.value === '0'){ convInput.value = key; }
+    else { convInput.value += key; }
+  }
+  convInput.dispatchEvent(new Event('input'));
+  convInput.focus();
+});
+
+// initial conversion on load
+runConversion();
+</script>
+
+</body>
+</html>
